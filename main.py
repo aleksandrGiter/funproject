@@ -11,21 +11,29 @@ selectedcolor = (0,0,0)
 selectedradius = 5
 isdrawing = False
 
+last_pos = pygame.mouse.get_pos()
+
 for i in range(0, len(colors)):
     palitra.append([pygame.Rect(100*i,620,100,100), colors[i], 80])
 
-
+def roundline(pos1, pos2, color, radius):
+    pygame.draw.line(screen, color, pos1, pos2, radius*2+1)
+    pygame.draw.circle(screen, color, pos1, radius)
+    pygame.draw.circle(screen, color, pos2, radius)
 while not done:
     for i in pygame.event.get():
         if i.type == pygame.QUIT:
             done = True
         if i.type == pygame.MOUSEMOTION and isdrawing:
-            objects.append([pygame.mouse.get_pos(), selectedcolor, selectedradius])
+            objects.append([last_pos, pygame.mouse.get_pos(), selectedcolor, selectedradius])
+            last_pos = pygame.mouse.get_pos()
         if i.type == pygame.MOUSEBUTTONDOWN:
             if i.button == 1:
                 if pygame.Rect(1180,620,100,100).collidepoint(pygame.mouse.get_pos()):
                     objects.clear()
-                isdrawing = True
+                else:
+                    last_pos = pygame.mouse.get_pos()
+                    isdrawing = True
             elif i.button == 3:
                 for yx in palitra:
                     if yx[0].collidepoint(pygame.mouse.get_pos()):
@@ -42,7 +50,8 @@ while not done:
 
     screen.fill((0,150,255))
     for i in objects:
-        pygame.draw.circle(screen, i[1], i[0], i[2])
+        # pygame.draw.circle(screen, i[1], i[0], i[2])
+        roundline(i[0], i[1], i[2], i[3])
     for i in palitra:
         pygame.draw.rect(screen, i[1], i[0])
     pygame.draw.rect(screen, (255,255,255), pygame.Rect(1180,620,100,100))
