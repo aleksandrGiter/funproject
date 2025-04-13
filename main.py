@@ -12,7 +12,8 @@ selectedradius = 5
 isdrawing = False
 
 for i in range(0, len(colors)):
-    palitra.append([(120*i+30, 600), colors[i], 8])
+    palitra.append([pygame.Rect(100*i,620,100,100), colors[i], 80])
+
 
 while not done:
     for i in pygame.event.get():
@@ -22,9 +23,13 @@ while not done:
             objects.append([pygame.mouse.get_pos(), selectedcolor, selectedradius])
         if i.type == pygame.MOUSEBUTTONDOWN:
             if i.button == 1:
+                if pygame.Rect(1180,620,100,100).collidepoint(pygame.mouse.get_pos()):
+                    objects.clear()
                 isdrawing = True
-            elif i.button == 2:
-                pygame.sprite.spritecollide()
+            elif i.button == 3:
+                for yx in palitra:
+                    if yx[0].collidepoint(pygame.mouse.get_pos()):
+                        selectedcolor = yx[1]
         if i.type == pygame.MOUSEBUTTONUP:
             isdrawing = False
         if i.type == pygame.MOUSEWHEEL:
@@ -39,6 +44,7 @@ while not done:
     for i in objects:
         pygame.draw.circle(screen, i[1], i[0], i[2])
     for i in palitra:
-        pygame.draw.circle(screen, i[1], i[0], i[2])
+        pygame.draw.rect(screen, i[1], i[0])
+    pygame.draw.rect(screen, (255,255,255), pygame.Rect(1180,620,100,100))
     pygame.display.flip()
 
